@@ -1,0 +1,38 @@
+spring:
+   application:
+      name: canaryApplication
+kafka:
+   bootstrap-servers: localhost:9092
+   schema-registry-url: http://localhost:8081
+   key-serializer: org.apache.kafka.common.serialization.StringSerializer
+   value-serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
+   topic-name: canary_topic
+   replication-factor: 3
+   topic-partitions: 1
+   producer:
+      acks: all
+      batch-size: 16384
+      retries: 0
+      linger-ms: 5
+      buffer-memory: 33554432
+      interceptorClasses: io.confluent.monitoring.clients.interceptor.MonitoringProducerInterceptor
+   consumer:
+      interceptorClasses: io.confluent.monitoring.clients.interceptor.MonitoringConsumerInterceptor
+
+--
+spring:
+   profiles: dev
+   application:
+      name: canaryApplication
+kafka:
+   bootstrap-servers: or1010051053014.corp.adobe.com:9092,or1010051053015.corp.adobe.com:9092,or1010051053016.corp.adobe.com:9092
+   schema-registry-url: http://or1010051053018.corp.adobe.com:18091
+   key-serializer: org.apache.kafka.common.serialization.StringSerializer
+   value-serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
+   producer:
+      topicName: canary.topic
+      interceptorClasses: io.confluent.monitoring.clients.interceptor.MonitoringProducerInterceptor
+   consumer:
+      topicName: canary.topic
+      interceptorClasses: io.confluent.monitoring.clients.interceptor.MonitoringConsumerInterceptor
+
